@@ -15,18 +15,23 @@ A financial organizer created to organize tax-related tasks, such as consolidati
 2. Open your IDE and open financeproject as a Java Project
 3. Install the Dependencies below
 
-+ JDBC
-1. Install https://go.microsoft.com/fwlink/?linkid=2310306
-2. Unzip the file
-3. In Eclipse, right-click your project, then click Properties > Java Build Path > Libraries > Classpath > Add External JARs
-4. Go to the unzipped file sqljdbc_enu > sqljdbc > enu > jars > mssql-jdbc.jre11.jar
-5. Double-click mssql-jdbc.jre11.jar to add it to the build path, then apply and close
+#### **JDBC Installation**  
+1. Download JDBC Driver: [Microsoft JDBC Driver](https://go.microsoft.com/fwlink/?linkid=2310306)  
+2. Unzip the file.  
+3. In Eclipse:  
+   - Right-click your project → **Properties** → **Java Build Path**.  
+   - Go to **Libraries** → **Classpath** → **Add External JARs**.  
+4. Navigate to the unzipped folder:  
+   ```
+   sqljdbc_enu > sqljdbc > enu > jars > mssql-jdbc.jre11.jar
+   ```  
+5. Select **`mssql-jdbc.jre11.jar`**, then click **Apply & Close**.  
 
-+ Apache POI
-[Tutorial](https://www.youtube.com/watch?app=desktop&v=tJZWGSa2Dhg)
-[Apache POI Binaries] (https://archive.apache.org/dist/poi/release/bin/)
+#### **Apache POI (Excel File Handling)**  
+- [Apache POI Installation Guide](https://www.youtube.com/watch?app=desktop&v=tJZWGSa2Dhg)  
+- [Apache POI Binaries](https://archive.apache.org/dist/poi/release/bin/)  
 
-+ SQL Server
-[Tutorial] (https://www.youtube.com/watch?v=dPs7BQ4Zx_Q)
-[SQL Server] (https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
-[SSMS] (https://aka.ms/ssmsfullsetup)
+#### **SQL Server & SSMS Installation**  
+- [SQL Server Installation Tutorial](https://www.youtube.com/watch?v=dPs7BQ4Zx_Q)  
+- [Download SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)  
+- [Download SSMS (SQL Server Management Studio)](https://aka.ms/ssmsfullsetup)  
