@@ -8,6 +8,7 @@ A financial organizer created to organize tax-related tasks, such as consolidati
 + JDBC
 + SQL Server and SSMS
 + Apache POI
++ iText Core
 
 ### Installation
 
@@ -34,4 +35,10 @@ A financial organizer created to organize tax-related tasks, such as consolidati
 #### **SQL Server & SSMS Installation**  
 - [SQL Server Installation Tutorial](https://www.youtube.com/watch?v=dPs7BQ4Zx_Q)  
 - [Download SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)  
-- [Download SSMS (SQL Server Management Studio)](https://aka.ms/ssmsfullsetup)  
+- [Download SSMS (SQL Server Management Studio)](https://aka.ms/ssmsfullsetup)
+
+#### **iText Core**
+1. Head over to [iText Java](https://github.com/itext/itext-java/releases)
+2. Download iText-Core-only-jars.zip and add the jars to the java project
+3. Install [slf4j-api.jar](https://mvnrepository.com/artifact/org.slf4j/slf4j-api) and add the jar to the java project
+4. Install [slf4j-simple.jar](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple) and add the jar to the java project
