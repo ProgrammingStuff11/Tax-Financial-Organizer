@@ -30,7 +30,13 @@ A financial organizer created to organize tax-related tasks, such as consolidati
 
 #### **Apache POI (Excel File Handling)**  
 - [Apache POI Installation Guide](https://www.youtube.com/watch?app=desktop&v=tJZWGSa2Dhg)  
-- [Apache POI Binaries](https://archive.apache.org/dist/poi/release/bin/)  
+- [Apache POI Binaries](https://archive.apache.org/dist/poi/release/bin/)
+
+#### **Note:**
+- DO NOT add the log4j-api.jar from the apache poi binaries as shown in the installation guide. Instead install log4j-api.jar from [here](https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api) and log4j-core.jar from [here](https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core). Make sure that the version number of the installed jars are the same otherwise the program will show the error:
+   ```
+   ERROR StatusLogger Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...
+   ```
 
 #### **SQL Server & SSMS Installation**  
 - [SQL Server Installation Tutorial](https://www.youtube.com/watch?v=dPs7BQ4Zx_Q)  
