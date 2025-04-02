@@ -48,4 +48,4 @@ A financial organizer created to organize tax-related tasks, such as consolidati
 2. Download iText-Core-only-jars.zip and add the jars to the java project
 3. Install [slf4j-api.jar](https://mvnrepository.com/artifact/org.slf4j/slf4j-api) and add the jar to the java project
 4. Install [slf4j-simple.jar](https://mvnrepository.com/artifact/org.slf4j/slf4j-simple) and add the jar to the java project
-5. Install [log4j-slf4j2-imp.jar](https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl)
+5. Install [log4j-slf4j2-imp.jar](https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl)  and add the jar to the java project
