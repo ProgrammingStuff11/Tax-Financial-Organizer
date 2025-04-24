@@ -102,7 +102,7 @@ public class MainUserGUI {
 			}
 			
 		});
-		addBackupRestoreDelete.setText("Add/Backup/Restore/Delete Data");
+		addBackupRestoreDelete.setText("Add/Update/Backup/Restore/Delete Data");
 		addBackupRestoreDelete.setPreferredSize(new Dimension(500, 100));
 		f.add(addBackupRestoreDelete);
 		

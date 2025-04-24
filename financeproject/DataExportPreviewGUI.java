@@ -10,7 +10,6 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -26,8 +25,6 @@ public class DataExportPreviewGUI {
 	private JCheckBox cb1;
 	private JCheckBox cb2;
 	private JCheckBox cb3;
-	private JCheckBox cb4;
-	private JCheckBox cb5;
 	private JLabel l;
 	private boolean[] isChecked;
 	
@@ -35,7 +32,6 @@ public class DataExportPreviewGUI {
 	private JFrame f2;
 	private JButton b3;
 	private JButton b4;
-	private JButton b5;
 	private JButton b6;
 	private JButton b7;
 	private JLabel l1;
@@ -45,15 +41,11 @@ public class DataExportPreviewGUI {
 	private JComboBox<JCheckBox> c1;
 	private JComboBox<JCheckBox> c2;
 	private JComboBox<JCheckBox> c3;
-	private JLabel l2;
 	private JButton updateButton;
 	
 	// Swing GUI for the exporting GUI
-	private JFrame f4;
 	private JTable jt1;
-	private JLabel l3;
-	private JTextField jtf;
-	private JCheckBox[] jcb = {new JCheckBox("Form 1099B"), new JCheckBox("Option 2"), new JCheckBox("Option 3")};
+	private JCheckBox[] jcb = {new JCheckBox("Form 1099B"), new JCheckBox("Form 1099DIV"), new JCheckBox("Form 1099INT")};
 	private JCheckBox[] jcb2 = {new JCheckBox("Ascending"), new JCheckBox("Descending")};
 	private JCheckBox[] jcb3 = {
 			new JCheckBox("tin"),
@@ -92,26 +84,19 @@ public class DataExportPreviewGUI {
 		cb1 = new JCheckBox();
 		cb2 = new JCheckBox();
 		cb3 = new JCheckBox();
-		cb4 = new JCheckBox();
-		cb5 = new JCheckBox();
 		l = new JLabel("Pick which forms you would like to export");
 		isChecked = new boolean[5];
 		
 		f2 = new JFrame("Sort/Preview/Export");
 		b3 = new JButton();
 		b4 = new JButton();
-		b5 = new JButton();
 		b6 = new JButton();
 		b7 = new JButton();
 		l1 = new JLabel("Note: The 1040 form will always be exported as an PDF.");
 
 		f3 = new JFrame("Sort");
-		l2 = new JLabel("Sort");
 		updateButton = new JButton("Update");
 		
-		f4 = new JFrame("Preview");
-		l3 = new JLabel("Preview");
-		jtf = new JTextField(15);
 		rs = null;
 		dbconnection = new DatabaseConnection();
 		dataExportGUISetup();
@@ -145,7 +130,7 @@ public class DataExportPreviewGUI {
 			}
 			
 		});
-		cb2.setText("checkbox 2");
+		cb2.setText("Form 1099DIV");
 		
 		cb3.setAction(new AbstractAction() {
 
@@ -156,29 +141,7 @@ public class DataExportPreviewGUI {
 			}
 			
 		});
-		cb3.setText("checkbox 3");
-		
-		cb4.setAction(new AbstractAction() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(cb4.isSelected()) isChecked[3] = true;
-				else isChecked[3] = false;
-			}
-			
-		});
-		cb4.setText("checkbox 4");
-		
-		cb5.setAction(new AbstractAction() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(cb5.isSelected()) isChecked[4] = true;
-				else isChecked[4] = false;
-			}
-			
-		});
-		cb5.setText("checkbox 5");
+		cb3.setText("Form 1099INT");
 		
 		// Button that takes user back to main GUI
 		b1.setAction(new AbstractAction() {
@@ -214,8 +177,6 @@ public class DataExportPreviewGUI {
 		f.add(cb1);
 		f.add(cb2);
 		f.add(cb3);
-		f.add(cb4);
-		f.add(cb5);
 		f.add(b2);
 		
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -243,14 +204,6 @@ public class DataExportPreviewGUI {
 			
 		});
 		b3.setText("back to main menu");
-				
-
-//		if(!jcb[0].isSelected()) {
-			rs = dbconnection.readFromForm1099B();
-//		}
-//		else if(jcb2[0].isSelected() ^ jcb2[1].isSelected()) {
-//			rs = dbconnection.orderForm1099B(jcb2[0].isSelected(), jcb2[1].isSelected(), jcb3);
-//		}
 		
 		// Button that takes user back to sort GUI
 		b4.setAction(new AbstractAction() {
@@ -264,6 +217,8 @@ public class DataExportPreviewGUI {
 		b4.setText("Sort");
 
 		if(isChecked[0]) {
+			rs = dbconnection.readFromForm1099B();
+			
 			String[] columns = {"tin", "transactions", "quantity", "description", "cusip", "owner", "reportingCategory", "dateOfAcquisition", "dateOfSaleOrExchange", "salesPrice", "costBasis", "accruedMarketDiscount", "washSaleLossDisallowed", "gainOrLoss", "transactionDescription", "YTDAmortizationOrAccretion", "LTDAmortizationOrAccretion", "ProceedsFromCollectibles", "SalesPrice1099B", "CostBasis1099B", "GainOrLoss1099B"};
 			model = new DefaultTableModel(columns, 0);
 			jt1 = new JTable(model);
@@ -294,6 +249,88 @@ public class DataExportPreviewGUI {
 				model.addRow(data);
 			}
 		}
+		else if (isChecked[1]) {
+			rs = dbconnection.readFromForm1099DIV();
+
+			String[] columns = {
+				"tin", "accountNumber", "totalOrdinaryDividends", "qualifiedDividends", "totalCapitalGainDist",
+				"unrecapSec1250Gain", "section1202Gain", "collectiblesGain", "section897OrdinaryDividends",
+				"section897CapitalGain", "nondividendDistributions", "federalIncomeTaxWithheld",
+				"section199ADividends", "investmentExpenses", "foreignTaxPaid", "foreignCountryOrUSPossession",
+				"liquidationDistributionsCash", "liquidationDistributionsNonCash", "exemptInterestDividends",
+				"specifiedPrivateActivityBondInterestDividends", "state", "stateIdentificationNo", "stateTaxWithheld"
+			};
+			model = new DefaultTableModel(columns, 0);
+			jt1 = new JTable(model);
+
+			while (rs.next()) {
+				String[] data = {
+					String.valueOf(rs.getInt("tin")),
+					String.valueOf(rs.getDouble("accountNumber")),
+					String.valueOf(rs.getDouble("totalOrdinaryDividends")),
+					String.valueOf(rs.getDouble("qualifiedDividends")),
+					String.valueOf(rs.getDouble("totalCapitalGainDist")),
+					String.valueOf(rs.getDouble("unrecapSec1250Gain")),
+					String.valueOf(rs.getInt("section1202Gain")),
+					String.valueOf(rs.getDouble("collectiblesGain")),
+					String.valueOf(rs.getDouble("section897OrdinaryDividends")),
+					String.valueOf(rs.getDouble("section897CapitalGain")),
+					String.valueOf(rs.getDouble("nondividendDistributions")),
+					String.valueOf(rs.getDouble("federalIncomeTaxWithheld")),
+					String.valueOf(rs.getDouble("section199ADividends")),
+					String.valueOf(rs.getInt("investmentExpenses")),
+					String.valueOf(rs.getDouble("foreignTaxPaid")),
+					rs.getString("foreignCountryOrUSPossession"),
+					String.valueOf(rs.getDouble("liquidationDistributionsCash")),
+					String.valueOf(rs.getDouble("liquidationDistributionsNonCash")),
+					String.valueOf(rs.getDouble("exemptInterestDividends")),
+					String.valueOf(rs.getDouble("specifiedPrivateActivityBondInterestDividends")),
+					rs.getString("state"),
+					String.valueOf(rs.getInt("stateIdentificationNo")),
+					String.valueOf(rs.getInt("stateTaxWithheld"))
+				};
+				model.addRow(data);
+			}
+		}
+		else if (isChecked[2]) {
+			rs = dbconnection.readFromForm1099INT();
+
+			String[] columns = {
+				"tin", "accountNumber", "interestIncome", "earlyWithdrawalPenalty", "usSavingsBondInterest",
+				"interestOnUSObligations", "foreignTaxPaid", "foreignCountryOrUSPossession", "taxExemptInterest",
+				"specifiedPrivateActivityBondInterest", "marketDiscount", "bondPremium", "bondPremiumTreasury",
+				"bondPremiumTaxExemptBond", "federalIncomeTaxWithheld", "investmentExpenses", "state",
+				"stateIdentificationNo", "stateTaxWithheld"
+			};
+			model = new DefaultTableModel(columns, 0);
+			jt1 = new JTable(model);
+
+			while (rs.next()) {
+				String[] data = {
+					String.valueOf(rs.getInt("tin")),
+					String.valueOf(rs.getInt("accountNumber")),
+					String.valueOf(rs.getDouble("interestIncome")),
+					String.valueOf(rs.getInt("earlyWithdrawalPenalty")),
+					String.valueOf(rs.getInt("usSavingsBondInterest")),
+					String.valueOf(rs.getInt("interestOnUSObligations")),
+					String.valueOf(rs.getInt("foreignTaxPaid")),
+					rs.getString("foreignCountryOrUSPossession"),
+					String.valueOf(rs.getInt("taxExemptInterest")),
+					String.valueOf(rs.getInt("specifiedPrivateActivityBondInterest")),
+					String.valueOf(rs.getInt("marketDiscount")),
+					String.valueOf(rs.getInt("bondPremium")),
+					String.valueOf(rs.getInt("bondPremiumTreasury")),
+					String.valueOf(rs.getInt("bondPremiumTaxExemptBond")),
+					String.valueOf(rs.getInt("federalIncomeTaxWithheld")),
+					String.valueOf(rs.getInt("investmentExpenses")),
+					rs.getString("state"),
+					String.valueOf(rs.getInt("stateIdentificationNo")),
+					String.valueOf(rs.getInt("stateTaxWithheld"))
+				};
+				model.addRow(data);
+			}
+		}
+
 		
 		JPanel otherButtonsPanel = new JPanel();
 		otherButtonsPanel.setLayout(new GridLayout(7, 1));
@@ -303,7 +340,20 @@ public class DataExportPreviewGUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MessageFormat header = new MessageFormat(jcb[0].getText());
+				
+				String headerText = "";
+
+				for (int i = 0; i < jcb.length; i++) {
+					if (jcb[i].isSelected()) {
+						if (headerText.equals("")) {
+							headerText += jcb[i].getText();
+						} else {
+							headerText += ", " + jcb[i].getText();
+						}
+					}
+				}
+				
+				MessageFormat header = new MessageFormat(headerText);
 				MessageFormat footer = new MessageFormat("");
 
 				try{
@@ -394,7 +444,7 @@ public class DataExportPreviewGUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					rs = dbconnection.orderForm1099B(jcb2[0].isSelected(), jcb2[1].isSelected(), jcb3);
+					rs = dbconnection.orderForm1099B(jcb[0].isSelected(), jcb[1].isSelected(), jcb[2].isSelected(), jcb2[0].isSelected(), jcb2[1].isSelected(), jcb3);
 					
 					model.setRowCount(0);
 					
@@ -422,6 +472,63 @@ public class DataExportPreviewGUI {
 							String.valueOf(rs.getInt("SalesPrice1099B")),
 							String.valueOf(rs.getInt("CostBasis1099B")),
 							String.valueOf(rs.getInt("GainOrLoss1099B"))
+							};
+							model.addRow(data);
+						}
+					}
+					
+					else if (isChecked[1]) {
+						while (rs.next()) {
+							String[] data = {
+								String.valueOf(rs.getInt("tin")),
+								String.valueOf(rs.getInt("accountNumber")),
+								String.valueOf(rs.getInt("totalOrdinaryDividends")),
+								String.valueOf(rs.getInt("qualifiedDividends")),
+								String.valueOf(rs.getInt("totalCapitalGainDist")),
+								String.valueOf(rs.getInt("unrecapSec1250Gain")),
+								String.valueOf(rs.getInt("section1202Gain")),
+								String.valueOf(rs.getInt("collectiblesGain")),
+								String.valueOf(rs.getInt("section897OrdinaryDividends")),
+								String.valueOf(rs.getInt("section897CapitalGain")),
+								String.valueOf(rs.getInt("nondividendDistributions")),
+								String.valueOf(rs.getInt("federalIncomeTaxWithheld")),
+								String.valueOf(rs.getInt("section199ADividends")),
+								String.valueOf(rs.getInt("investmentExpenses")),
+								String.valueOf(rs.getInt("foreignTaxPaid")),
+								rs.getString("foreignCountryOrUSPossession"),
+								String.valueOf(rs.getInt("liquidationDistributionsCash")),
+								String.valueOf(rs.getInt("liquidationDistributionsNonCash")),
+								String.valueOf(rs.getInt("exemptInterestDividends")),
+								String.valueOf(rs.getInt("specifiedPrivateActivityBondInterestDividends")),
+								rs.getString("state"),
+								String.valueOf(rs.getInt("stateIdentificationNo")),
+								String.valueOf(rs.getInt("stateTaxWithheld"))
+							};
+							model.addRow(data);
+						}
+					}
+					else if (isChecked[2]) {
+						while (rs.next()) {
+							String[] data = {
+								String.valueOf(rs.getInt("tin")),
+								String.valueOf(rs.getInt("accountNumber")),
+								String.valueOf(rs.getDouble("interestIncome")),
+								String.valueOf(rs.getInt("earlyWithdrawalPenalty")),
+								String.valueOf(rs.getInt("usSavingsBondInterest")),
+								String.valueOf(rs.getInt("interestOnUSObligations")),
+								String.valueOf(rs.getInt("foreignTaxPaid")),
+								rs.getString("foreignCountryOrUSPossession"),
+								String.valueOf(rs.getInt("taxExemptInterest")),
+								String.valueOf(rs.getInt("specifiedPrivateActivityBondInterest")),
+								String.valueOf(rs.getInt("marketDiscount")),
+								String.valueOf(rs.getInt("bondPremium")),
+								String.valueOf(rs.getInt("bondPremiumTreasury")),
+								String.valueOf(rs.getInt("bondPremiumTaxExemptBond")),
+								String.valueOf(rs.getInt("federalIncomeTaxWithheld")),
+								String.valueOf(rs.getInt("investmentExpenses")),
+								rs.getString("state"),
+								String.valueOf(rs.getInt("stateIdentificationNo")),
+								String.valueOf(rs.getInt("stateTaxWithheld"))
 							};
 							model.addRow(data);
 						}

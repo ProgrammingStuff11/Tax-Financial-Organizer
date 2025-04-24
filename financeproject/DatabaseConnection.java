@@ -25,8 +25,10 @@ public class DatabaseConnection {
 			s.execute("IF OBJECT_ID('taxpayer') IS NULL CREATE TABLE taxpayer(tin INT PRIMARY KEY, fName VARCHAR(30), mInitial CHAR(1), lName VARCHAR(30), dob DATE, mPhone BIGINT, occupation VARCHAR(500));");
 			s.execute("IF OBJECT_ID('spouse') IS NULL CREATE TABLE spouse(sTin INT PRIMARY KEY, tin INT FOREIGN KEY REFERENCES taxpayer, sFName VARCHAR(30), sMInitial CHAR(1), sLName VARCHAR(30), sDob DATE, sMPhone BIGINT, sOccupation VARCHAR(500));");
 			s.execute("IF OBJECT_ID('Form1099B') IS NULL CREATE TABLE Form1099B(tin INT FOREIGN KEY REFERENCES taxpayer, transactions VARCHAR(500), quantity FLOAT, description VARCHAR(150), cusip CHAR(9), owner VARCHAR(15), reportingCategory CHAR(1), dateOfAcquisition DATE, dateOfSaleOrExchange DATE, salesPrice FLOAT, costBasis FLOAT, accruedMarketDiscount FLOAT, washSaleLossDisallowed FLOAT, gainOrLoss FLOAT, transactionDescription VARCHAR(50), YTDAmortizationOrAccretion TINYINT, LTDAmortizationOrAccretion TINYINT, ProceedsFromCollectibles TINYINT, SalesPrice1099B INT, CostBasis1099B INT, GainOrLoss1099B INT)");
+			s.execute("IF OBJECT_ID('Form1099DIV') IS NULL CREATE TABLE Form1099DIV(tin INT FOREIGN KEY REFERENCES taxpayer, accountNumber INT, totalOrdinaryDividends FLOAT, qualifiedDividends FLOAT, totalCapitalGainDist FLOAT, unrecapSec1250Gain FLOAT, section1202Gain FLOAT, collectiblesGain FLOAT, section897OrdinaryDividends FLOAT, section897CapitalGain FLOAT, nondividendDistributions FLOAT, federalIncomeTaxWithheld FLOAT, section199ADividends FLOAT, investmentExpenses FLOAT, foreignTaxPaid FLOAT, ForeignCountryorUSPossession VARCHAR(50), LiquidationDistributionsCash FLOAT, LiquidationDistributionsNonCash FLOAT, ExemptInterestDividends FLOAT, SpecifiedPrivateActivityBondInterestDividends FLOAT, state VARCHAR(2), StateIdentificationNo FLOAT, StateTaxWithheld FLOAT)");
+			s.execute("IF OBJECT_ID('Form1099INT') IS NULL CREATE TABLE Form1099INT(tin INT FOREIGN KEY REFERENCES taxpayer, accountNumber INT, interestIncome FLOAT, earlyWithdrawalPenalty INT, usSavingsBondInterest FLOAT, interestOnUSObligations FLOAT, foreignTaxPaid FLOAT, foreignCountryOrUSPossession VARCHAR(50), taxExemptInterest FLOAT, specifiedPrivateActivityBondInterest FLOAT, marketDiscount FLOAT, bondPremium FLOAT, bondPremiumTreasury FLOAT, bondPremiumTaxExemptBond FLOAT, federalIncomeTaxWithheld FLOAT, investmentExpenses FLOAT, state VARCHAR(2), stateIdentificationNo INT, stateTaxWithheld FLOAT)");
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
 		}
 		
 		
@@ -60,13 +62,44 @@ public class DatabaseConnection {
 		
 	}
 	
-	public void pidToDatabase(int tin, String transactions, double quantity, String description, String cusip, String owner, char reportingCategory, String dateOfAcquisition, String dateOfSaleOrExchange, double salesPrice, double costBasis, double accruedMarketDiscount, double washSaleLossDisallowed, double gainOrLoss, String transactionDescription, byte YTDAmortizationOrAccretion, byte LTDAmortizationOrAccretion, byte ProceedsFromCollectibles, int SalesPrice1099B, int CostBasis1099B, int GainOrLoss1099B) {
+	public void pidForm1099BToDatabase(int tin, String transactions, double quantity, String description, String cusip, String owner, char reportingCategory, String dateOfAcquisition, String dateOfSaleOrExchange, double salesPrice, double costBasis, double accruedMarketDiscount, double washSaleLossDisallowed, double gainOrLoss, String transactionDescription, byte YTDAmortizationOrAccretion, byte LTDAmortizationOrAccretion, byte ProceedsFromCollectibles, int SalesPrice1099B, int CostBasis1099B, int GainOrLoss1099B) {
 		try(Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=financial_sorter;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
 			Statement s = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			ResultSet rs = s.executeQuery("SELECT OBJECT_ID('Form1099B');");
 			) {	
 			
 			s.execute("INSERT INTO Form1099B VALUES(" + tin + ",'" + transactions + "'," + quantity + ",'" + description +  "','" + cusip + "','" + owner + "','" + reportingCategory +  "','" + dateOfAcquisition +  "','" + dateOfSaleOrExchange +  "'," + salesPrice + "," + costBasis +  "," + accruedMarketDiscount +  "," + washSaleLossDisallowed +  "," + gainOrLoss +  ",'" + transactionDescription +  "'," + YTDAmortizationOrAccretion + "," + LTDAmortizationOrAccretion + "," + ProceedsFromCollectibles +  "," + SalesPrice1099B +  "," + CostBasis1099B +  "," + GainOrLoss1099B + ");");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void pidForm1099DIVToDatabase(int tin, int accountNumber, double totalOrdinaryDividends,
+			double qualifiedDividends, double totalCapitalGainDist, double unrecapSec1250Gain, int section1202Gain,
+			int collectiblesGain, double section897OrdinaryDividends, double section897CapitalGain,
+			double nondividendDistributions, int federalIncomeTaxWithheld, double section199ADividends,
+			int investmentExpenses, double foreignTaxPaid, String ForeignCountryorUSPossession,
+			int LiquidationDistributionsCash, int LiquidationDistributionsNonCash, double ExemptInterestDividends,
+			double specifiedPrivateActivityBondInterestDividends, String state, int stateIdentificationNo,
+			int stateTaxWithheld) {
+		try (
+			Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=financial_sorter;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
+			Statement s = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = s.executeQuery("SELECT OBJECT_ID('Form1099DIV');")
+		) {
+			s.execute("INSERT INTO Form1099DIV VALUES(" + tin + "," + accountNumber + "," + totalOrdinaryDividends + "," + qualifiedDividends + "," + totalCapitalGainDist + "," + unrecapSec1250Gain + "," + section1202Gain + "," + collectiblesGain + "," + section897OrdinaryDividends + "," + section897CapitalGain + "," + nondividendDistributions + "," +	federalIncomeTaxWithheld + "," + section199ADividends + "," + investmentExpenses + "," + foreignTaxPaid + ",'" + ForeignCountryorUSPossession + "'," + LiquidationDistributionsCash + "," +	LiquidationDistributionsNonCash + "," +	ExemptInterestDividends + "," +	specifiedPrivateActivityBondInterestDividends + ",'" + state + "'," + stateIdentificationNo + "," +	stateTaxWithheld + ");");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void pidForm1099INTToDatabase(int tin, int accountNumber, double interestIncomeNotIncludedLine3, int earlyWithdrawalPenalty, int interestOnUsSavingsBondsAndTreasuryObligations, int federalIncomeTaxWithheld, int investmentExpenses, int foreignTaxPaid, String foreignCountryOrUsPossession, int taxExemptInterest, int specifiedPrivateActivityBondInterest, int marketDiscount, int bondPremium, int bondPremiumOnTreasuryObligations, int bondPremiumOnTaxExemptBond, int taxExemptTaxCreditBondCusipNo, String state, int stateIdentificationNo, int stateTaxWithheld) {
+		try (
+			Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=financial_sorter;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
+			Statement s = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = s.executeQuery("SELECT OBJECT_ID('Form1099INT');")
+		) {
+			s.execute("INSERT INTO Form1099INT VALUES(" + tin + "," + accountNumber + "," + interestIncomeNotIncludedLine3 + "," + earlyWithdrawalPenalty + "," + interestOnUsSavingsBondsAndTreasuryObligations + "," + federalIncomeTaxWithheld + "," + investmentExpenses + "," + foreignTaxPaid + ",'" + foreignCountryOrUsPossession + "'," + taxExemptInterest + "," + specifiedPrivateActivityBondInterest + "," + marketDiscount + "," + bondPremium + "," + bondPremiumOnTreasuryObligations + "," + bondPremiumOnTaxExemptBond + "," + taxExemptTaxCreditBondCusipNo + ",'" + state + "'," + stateIdentificationNo + "," + stateTaxWithheld + ");");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -80,14 +113,34 @@ public class DatabaseConnection {
 		return s.executeQuery("SELECT * FROM Form1099B;");
 
 	}
+	
+	public ResultSet readFromForm1099DIV() throws SQLException {
+		
+		Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=financial_sorter;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
+		Statement s = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		
+		return s.executeQuery("SELECT * FROM Form1099DIV;");
 
-	public ResultSet orderForm1099B(boolean asc, boolean desc, JCheckBox[] jcb3) throws SQLException {
+	}
+	
+	public ResultSet readFromForm1099INT() throws SQLException {
+		
+		Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=financial_sorter;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
+		Statement s = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		
+		return s.executeQuery("SELECT * FROM Form1099INT;");
+
+	}
+
+	public ResultSet orderForm1099B(boolean Form1099B, boolean Form1099DIV, boolean Form1099INT, boolean asc, boolean desc, JCheckBox[] jcb3) throws SQLException {
 
 		int[] indexOfSelectedColumns = new int[jcb3.length];
 		int counter = 0;
 
 		Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=financial_sorter;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
 		Statement s = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		
+		// Finds the index of the columns selected
 		for(int i = 0; i < jcb3.length; i++) {
 			if(jcb3[i].isSelected()) {
 				indexOfSelectedColumns[counter] = i;
@@ -95,13 +148,33 @@ public class DatabaseConnection {
 			}
 		}
 
-		// Create a for loop for indexOfSelectedColumns[] and a separate String that holds the query in order to implement this properly
-		if(asc) {
-			System.out.println(jcb3[indexOfSelectedColumns[0]].getText());
-			return s.executeQuery("SELECT * FROM Form1099B ORDER BY " + jcb3[indexOfSelectedColumns[0]].getText() + " ASC;");
+		// Orders multiple columns
+		String orderByCol = "";
+		for (int i = 0; i < counter; i++) {
+			orderByCol += jcb3[indexOfSelectedColumns[i]].getText();
+			if (i < counter - 1) {
+				orderByCol += ", ";
+			}
 		}
-		else if(desc) {
-			return s.executeQuery("SELECT * FROM Form1099B ORDER BY " + jcb3[indexOfSelectedColumns[0]].getText() + " DESC;");
+		
+		// Finds the direction the user ordered the columns
+		String orderDirection = "";
+		if (asc) {
+			orderDirection = "ASC";
+		} else if (desc) {
+			orderDirection = "DESC";
+		}
+		
+		// Orders depending on the 1099 Form chosen
+		if(Form1099B) {
+			System.out.println(jcb3[indexOfSelectedColumns[0]].getText());
+			return s.executeQuery("SELECT * FROM Form1099B ORDER BY " + orderByCol + " " + orderDirection + ";");
+		}
+		else if(Form1099DIV) {
+			return s.executeQuery("SELECT * FROM Form1099DIV ORDER BY " + orderByCol + " " + orderDirection + ";");
+		}
+		else if(Form1099INT) {
+			return s.executeQuery("SELECT * FROM Form1099INT ORDER BY " + orderByCol + " " + orderDirection + ";");
 		}
         else return null;
     }
@@ -176,24 +249,29 @@ public class DatabaseConnection {
 		}
 	}
 	
-	public void backupDB() {
+	public void backupDB(String fileLocation) {
 		try {
 			Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=financial_sorter;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
 			Statement s = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			
-			s.execute("BACKUP DATABASE financial_sorter TO DISK = 'C:\\Users\\student\\Downloads\\backup.bak';");
+			s.execute("BACKUP DATABASE financial_sorter TO DISK = '" + fileLocation + "';");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 	}
 	
-	public void restoreDB() {
+	public void restoreDB(String fileLocation) {
 		try {
-			Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=financial_sorter;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
+			Connection c = DriverManager.getConnection("jdbc:sqlserver://localhost;databaseName=master;IntegratedSecurity=true;encrypt=true;trustServerCertificate=true");
 			Statement s = c.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			
-			s.execute("RESTORE DATABASE financial_sorter FROM DISK = 'C:\\Users\\student\\Downloads\\backup.bak';");
+			// ALTER DATABASE command disconnects the database so that the database can be restored
+			s.execute("ALTER DATABASE financial_sorter SET SINGLE_USER WITH ROLLBACK IMMEDIATE;");
+			// WITH REPLACE allows the database to be overwritten
+			s.execute("RESTORE DATABASE financial_sorter FROM DISK = '" + fileLocation + "' WITH REPLACE;");
+			s.execute("ALTER DATABASE financial_sorter SET MULTI_USER;");
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -226,4 +304,5 @@ public class DatabaseConnection {
 			e.printStackTrace();
 		}
 	}
+
 }
