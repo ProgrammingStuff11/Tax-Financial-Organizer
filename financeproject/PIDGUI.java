@@ -2,7 +2,6 @@ package financeproject;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.*;
 
 import javax.swing.*;
 
@@ -28,7 +27,13 @@ public class PIDGUI {
 	private JTextField phoneT;
 	private JLabel occupationL;
 	private JTextField occupationT;
-	
+	private JLabel routingNumberLT;
+	private JTextField routingNumberFT;
+	private JLabel accountNumberLT;
+	private JTextField accountNumberFT;
+	private JLabel typeOfAccountLT;
+	private JTextField typeOfAccountFT;
+
 	private JCheckBox spouseJCB;
 	private JPanel spousePanel;
 	private JLabel sTinL;
@@ -68,7 +73,13 @@ public class PIDGUI {
 		phoneT = new JTextField(11);
 		occupationL = new JLabel("Occupation");
 		occupationT = new JTextField(20);
-		
+		routingNumberLT = new JLabel("Routing Number");
+		routingNumberFT = new JTextField(9);
+		accountNumberLT = new JLabel("Account Number");
+		accountNumberFT = new JTextField(12);
+		typeOfAccountLT = new JLabel("Type of Account");
+		typeOfAccountFT = new JTextField(1);
+
 		spouseJCB = new JCheckBox("Spouse");
 		spousePanel = new JPanel();
 		sTinL = new JLabel("Spouse TIN");
@@ -91,7 +102,7 @@ public class PIDGUI {
 	}
 
 	private void PIDGUISetup() {
-		p.setLayout(new GridLayout(8,2));
+		p.setLayout(new GridLayout(14,2));
 		
 		// Button that takes user back to main GUI
 		b1.setAction(new AbstractAction() {
@@ -110,7 +121,7 @@ public class PIDGUI {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PIDInfo pid = new PIDInfo(Integer.parseInt(tinT.getText()), firstNameT.getText(), middleITF.getText(), lastNameT.getText(), dobT.getText(), Long.parseLong(phoneT.getText()), occupationT.getText(),
+				PIDInfo pid = new PIDInfo(Integer.parseInt(tinT.getText()), firstNameT.getText(), middleITF.getText(), lastNameT.getText(), dobT.getText(), Long.parseLong(phoneT.getText()), occupationT.getText(), Long.parseLong(routingNumberFT.getText()), Long.parseLong(accountNumberFT.getText()), typeOfAccountFT.getText().charAt(0),
 						Integer.parseInt(sTinT.getText()), sFirstNameT.getText(), sMiddleITF.getText(), sLastNameT.getText(), sDobT.getText(), Long.parseLong(sPhoneT.getText()), sOccupationT.getText());
 				pid.pidInfo();
 			}
@@ -126,8 +137,8 @@ public class PIDGUI {
 			public void actionPerformed(ActionEvent e) {
 				boolean isSelected = spouseJCB.isSelected();
 				spousePanel.setVisible(isSelected);
-				if(isSelected) f.setSize(new Dimension(500, 450));
-				else f.setSize(new Dimension(500, 300));
+				if(isSelected) f.setSize(new Dimension(500, 500));
+				else f.setSize(new Dimension(500, 400));
 				f.repaint();
 				f.revalidate();
 			}
@@ -149,7 +160,13 @@ public class PIDGUI {
 		p.add(phoneT);
 		p.add(occupationL);
 		p.add(occupationT);
-		
+		p.add(routingNumberLT);
+		p.add(routingNumberFT);
+		p.add(accountNumberLT);
+		p.add(accountNumberFT);
+		p.add(typeOfAccountLT);
+		p.add(typeOfAccountFT);
+
 		p.add(spouseJCB);
 		
 		spousePanel.add(sTinL);
@@ -204,8 +221,11 @@ class PIDInfo {
 	private String sDob;
 	private long sPhone;
 	private String sOccupation;
+	private long routingNumber;
+	private long accountNumber;
+	private char typeOfAccount;
 	
-	protected PIDInfo(int tin, String firstName, String mInitial, String lastName, String dob, long phone, String occupation, int sTin, String sFirstName, String sMInitial, String sLastName, String sDob, long sPhone, String sOccupation) {
+	protected PIDInfo(int tin, String firstName, String mInitial, String lastName, String dob, long phone, String occupation, long routingNumber, long accountNumber, char typeOfAccount, int sTin, String sFirstName, String sMInitial, String sLastName, String sDob, long sPhone, String sOccupation) {
 		this.tin = tin;
 		this.firstName = firstName;
 		this.mInitial = mInitial;
@@ -213,6 +233,9 @@ class PIDInfo {
 		this.dob = dob;
 		this.phone = phone;
 		this.occupation = occupation;
+		this.routingNumber = routingNumber;
+		this.accountNumber = accountNumber;
+		this.typeOfAccount = typeOfAccount;
 		
 		this.sTin = sTin;
 		this.sFirstName = sFirstName;
@@ -225,7 +248,7 @@ class PIDInfo {
 
 	protected void pidInfo() {
 		DatabaseConnection databaseconnection = new DatabaseConnection();
-		databaseconnection.pidToDatabase(tin, firstName, mInitial, lastName, dob, phone, occupation);
+		databaseconnection.pidToDatabase(tin, firstName, mInitial, lastName, dob, phone, occupation, routingNumber, accountNumber, typeOfAccount);
 		databaseconnection.pidToDatabase(sTin, tin, sFirstName, sMInitial, sLastName, sDob, sPhone, sOccupation);
 
 		System.out.println(tin + " " + firstName + " " + mInitial + " " + lastName + " " + dob + " " + phone + " " + occupation);

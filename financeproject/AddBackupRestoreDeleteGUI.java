@@ -45,7 +45,6 @@ public class AddBackupRestoreDeleteGUI {
 	private DefaultTableModel model1099B;
 	private ResultSet rs;
 	
-	private JLabel jl3;
 	private JPanel panelWithRemoveRadioButtons;
 	private JTable removeJt;
 	private JPanel panelWithRemoveJTable;
@@ -70,6 +69,9 @@ public class AddBackupRestoreDeleteGUI {
 	private String[] updateColFieldData1099B;
 	private JTextField[] updateColFields1099B;
 	private String[] rowBeingUpdated1099B;
+
+	private JLabel tinL;
+	private JTextField tinF;
 
 	private String[] columns1099DIV = {"tin", "accountNumber", "totalOrdinaryDividends", "qualifiedDividends", "totalCapitalGainDist",
 			"unrecapSec1250Gain", "section1202Gain", "collectiblesGain", "section897OrdinaryDividends",
@@ -103,9 +105,12 @@ public class AddBackupRestoreDeleteGUI {
 	private String[] rowBeingUpdated1099INT;
 	private DefaultTableModel model1099INT;
 
-
+	private JPanel tinPanel;
 	
 	public AddBackupRestoreDeleteGUI() {
+		tinL = new JLabel("Tin:");
+		tinF = new JTextField(10);
+
 		f = new JFrame("Add/Update/Backup/Restore/Delete Data");
 		addB = new JButton();
 		updateB = new JButton();
@@ -146,12 +151,6 @@ public class AddBackupRestoreDeleteGUI {
 		model1099B = new DefaultTableModel(columns1099B, 0);
 		model1099DIV = new DefaultTableModel(columns1099DIV, 0);
 		model1099INT = new DefaultTableModel(columns1099INT, 0);
-
-		try {
-			rs = db.readFromForm1099B();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		
 		panelWithRemoveRadioButtons = new JPanel();
 		panelWithRemoveJTable = new JPanel();
@@ -204,14 +203,15 @@ public class AddBackupRestoreDeleteGUI {
 		removeColFieldData1099DIV = new String[19];
 		rowBeingUpdated1099DIV = new String[19];
 
+		tinPanel = new JPanel();
 		
 		GUISetup();
 	}
 
 	private void GUISetup() {
 		// GridLayout: 6 Rows and 1 Column
-		f.setLayout(new GridLayout(6, 1));
-		
+		f.setLayout(new GridLayout(8, 1));
+
 		// Button that takes user back to main GUI
 		b1.setAction(new AbstractAction() {
 
@@ -224,7 +224,12 @@ public class AddBackupRestoreDeleteGUI {
 		});
 		b1.setText("back to main menu");
 		f.add(b1);
-		
+
+		tinPanel.setLayout(new GridLayout(1, 2));
+		tinPanel.add(tinL);
+		tinPanel.add(tinF);
+		f.add(tinPanel);
+
 		// Button that adds info
 		addB.setAction(new AbstractAction() {
 
@@ -320,7 +325,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithAddRowButton.setLayout(new GridLayout(21,2));
 
-						rs = db.readFromForm1099B();
+						rs = db.readFromForm1099B(tinF.getText());
 						model1099B.setRowCount(0);
 
 						for(int i = 0; i < 21; i++) {
@@ -380,7 +385,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithAddRowButton.setLayout(new GridLayout(23,2));
 
-						rs = db.readFromForm1099DIV();
+						rs = db.readFromForm1099DIV(tinF.getText());
 						model1099DIV.setRowCount(0);
 
 						for(int i = 0; i < 23; i++) {
@@ -440,7 +445,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithAddRowButton.setLayout(new GridLayout(19,2));
 
-						rs = db.readFromForm1099INT();
+						rs = db.readFromForm1099INT(tinF.getText());
 						model1099INT.setRowCount(0);
 
 						for(int i = 0; i < 19; i++) {
@@ -494,21 +499,21 @@ public class AddBackupRestoreDeleteGUI {
 							colFieldData1099B[i] = colFields1099B[i].getText();
 						}
 						db2.addDB(colFieldData1099B);
-						rs = db.readFromForm1099B();
+						rs = db.readFromForm1099B(tinF.getText());
 					}
 					else if(jrbadd1099div.isSelected()) {
 						for(int i = 0; i < 23; i++) {
 							colFieldData1099DIV[i] = colFields1099DIV[i].getText();
 						}
 						db2.addDB(colFieldData1099DIV);
-						rs = db.readFromForm1099DIV();
+						rs = db.readFromForm1099DIV(tinF.getText());
 					}
 					else if(jrbadd1099int.isSelected()) {
 						for(int i = 0; i < 19; i++) {
 							colFieldData1099INT[i] = colFields1099INT[i].getText();
 						}
 						db2.addDB(colFieldData1099INT);
-						rs = db.readFromForm1099INT();
+						rs = db.readFromForm1099INT(tinF.getText());
 					}
 					JOptionPane.showMessageDialog(addRow, "Row Added!");
 
@@ -561,7 +566,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithUpdateRowButton.setLayout(new GridLayout(21,2));
 
-						rs = db.readFromForm1099B();
+						rs = db.readFromForm1099B(tinF.getText());
 						model1099B.setRowCount(0);
 
 						for(int i = 0; i < 21; i++) {
@@ -620,7 +625,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithUpdateRowButton.setLayout(new GridLayout(23,2));
 
-						rs = db.readFromForm1099DIV();
+						rs = db.readFromForm1099DIV(tinF.getText());
 						model1099DIV.setRowCount(0);
 
 						for(int i = 0; i < 23; i++) {
@@ -680,7 +685,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithUpdateRowButton.setLayout(new GridLayout(19,2));
 
-						rs = db.readFromForm1099INT();
+						rs = db.readFromForm1099INT(tinF.getText());
 						model1099INT.setRowCount(0);
 
 						for(int i = 0; i < 19; i++) {
@@ -730,7 +735,7 @@ public class AddBackupRestoreDeleteGUI {
 			                rowBeingUpdated1099B[i] = updateJt.getValueAt(updateJt.getSelectedRow(), i).toString();
 			            }
 						db2.updateDB(columns1099B, rowBeingUpdated1099B, updateColFieldData1099B);
-						rs = db.readFromForm1099B();
+						rs = db.readFromForm1099B(tinF.getText());
 					}
 					else if(jrbUpdate1099div.isSelected()) {
 						for(int i = 0; i < 23; i++) {
@@ -740,7 +745,7 @@ public class AddBackupRestoreDeleteGUI {
 			                rowBeingUpdated1099DIV[i] = updateJt.getValueAt(updateJt.getSelectedRow(), i).toString();
 			            }
 						db2.updateDB(columns1099DIV, rowBeingUpdated1099DIV, updateColFieldData1099DIV);
-						rs = db.readFromForm1099DIV();
+						rs = db.readFromForm1099DIV(tinF.getText());
 					}
 					else if(jrbUpdate1099int.isSelected()) {
 						for(int i = 0; i < 19; i++) {
@@ -750,7 +755,7 @@ public class AddBackupRestoreDeleteGUI {
 			                rowBeingUpdated1099INT[i] = updateJt.getValueAt(updateJt.getSelectedRow(), i).toString();
 			            }
 						db2.updateDB(columns1099INT, rowBeingUpdated1099INT, updateColFieldData1099INT);
-						rs = db.readFromForm1099INT();
+						rs = db.readFromForm1099INT(tinF.getText());
 					}
 					JOptionPane.showMessageDialog(updateRow, "Row Updated!");
 					
@@ -829,7 +834,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithRemoveRowButton.setLayout(new GridLayout(21,2));
 
-						rs = db.readFromForm1099B();
+						rs = db.readFromForm1099B(tinF.getText());
 						model1099B.setRowCount(0);
 
 						for(int i = 0; i < 21; i++) {
@@ -890,7 +895,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithRemoveRowButton.setLayout(new GridLayout(23,2));
 
-						rs = db.readFromForm1099DIV();
+						rs = db.readFromForm1099DIV(tinF.getText());
 						model1099DIV.setRowCount(0);
 
 						for(int i = 0; i < 23; i++) {
@@ -949,7 +954,7 @@ public class AddBackupRestoreDeleteGUI {
 
 						panelWithRemoveRowButton.setLayout(new GridLayout(19,2));
 
-						rs = db.readFromForm1099INT();
+						rs = db.readFromForm1099INT(tinF.getText());
 						model1099INT.setRowCount(0);
 
 						for(int i = 0; i < 19; i++) {
@@ -1004,21 +1009,21 @@ public class AddBackupRestoreDeleteGUI {
 							removeColFieldData1099B[i] = removeColFields1099B[i].getText();
 						}
 						db2.removeDB(removeColFieldData1099B, columns1099B);
-						rs = db.readFromForm1099B();
+						rs = db.readFromForm1099B(tinF.getText());
 					}
 					else if(jrbRemove1099div.isSelected()) {
 						for(int i = 0; i < 23; i++) {
 							removeColFieldData1099DIV[i] = removeColFields1099DIV[i].getText();
 						}
 						db2.removeDB(removeColFieldData1099DIV, columns1099DIV);
-						rs = db.readFromForm1099DIV();
+						rs = db.readFromForm1099DIV(tinF.getText());
 					}
 					else if(jrbRemove1099int.isSelected()) {
 						for(int i = 0; i < 19; i++) {
 							removeColFieldData1099INT[i] = removeColFields1099INT[i].getText();
 						}
 						db2.removeDB(removeColFieldData1099INT, columns1099INT);
-						rs = db.readFromForm1099INT();
+						rs = db.readFromForm1099INT(tinF.getText());
 					}
 					JOptionPane.showMessageDialog(removeRow, "Row Removed!");
 					

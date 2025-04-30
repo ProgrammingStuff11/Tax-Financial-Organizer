@@ -27,7 +27,10 @@ public class DataExportPreviewGUI {
 	private JCheckBox cb3;
 	private JLabel l;
 	private boolean[] isChecked;
-	
+	private JLabel tinL;
+	private JTextField tinF;
+	private JPanel tinPanel;
+
 	// Swing GUI menu for sorting/exporting GUI
 	private JFrame f2;
 	private JButton b3;
@@ -86,7 +89,10 @@ public class DataExportPreviewGUI {
 		cb3 = new JCheckBox();
 		l = new JLabel("Pick which forms you would like to export");
 		isChecked = new boolean[5];
-		
+		tinL = new JLabel("Tin:");
+		tinF = new JTextField(10);
+		tinPanel = new JPanel();
+
 		f2 = new JFrame("Sort/Preview/Export");
 		b3 = new JButton();
 		b4 = new JButton();
@@ -174,6 +180,10 @@ public class DataExportPreviewGUI {
 		
 		f.add(b1);
 		f.add(l);
+		tinPanel.setLayout(new GridLayout(1, 2));
+		tinPanel.add(tinL);
+		tinPanel.add(tinF);
+		f.add(tinPanel);
 		f.add(cb1);
 		f.add(cb2);
 		f.add(cb3);
@@ -181,7 +191,7 @@ public class DataExportPreviewGUI {
 		
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setSize(new Dimension(500, 500));
-		f.setResizable(false);
+		f.setResizable(true);
 		f.pack();
 		f.setVisible(true);
 	}
@@ -217,7 +227,7 @@ public class DataExportPreviewGUI {
 		b4.setText("Sort");
 
 		if(isChecked[0]) {
-			rs = dbconnection.readFromForm1099B();
+			rs = dbconnection.readFromForm1099B(tinF.getText());
 			
 			String[] columns = {"tin", "transactions", "quantity", "description", "cusip", "owner", "reportingCategory", "dateOfAcquisition", "dateOfSaleOrExchange", "salesPrice", "costBasis", "accruedMarketDiscount", "washSaleLossDisallowed", "gainOrLoss", "transactionDescription", "YTDAmortizationOrAccretion", "LTDAmortizationOrAccretion", "ProceedsFromCollectibles", "SalesPrice1099B", "CostBasis1099B", "GainOrLoss1099B"};
 			model = new DefaultTableModel(columns, 0);
@@ -250,7 +260,7 @@ public class DataExportPreviewGUI {
 			}
 		}
 		else if (isChecked[1]) {
-			rs = dbconnection.readFromForm1099DIV();
+			rs = dbconnection.readFromForm1099DIV(tinF.getText());
 
 			String[] columns = {
 				"tin", "accountNumber", "totalOrdinaryDividends", "qualifiedDividends", "totalCapitalGainDist",
@@ -293,7 +303,7 @@ public class DataExportPreviewGUI {
 			}
 		}
 		else if (isChecked[2]) {
-			rs = dbconnection.readFromForm1099INT();
+			rs = dbconnection.readFromForm1099INT(tinF.getText());
 
 			String[] columns = {
 				"tin", "accountNumber", "interestIncome", "earlyWithdrawalPenalty", "usSavingsBondInterest",
@@ -444,7 +454,7 @@ public class DataExportPreviewGUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					rs = dbconnection.orderForm1099B(jcb[0].isSelected(), jcb[1].isSelected(), jcb[2].isSelected(), jcb2[0].isSelected(), jcb2[1].isSelected(), jcb3);
+					rs = dbconnection.orderForm1099B(tinF.getText(), jcb[0].isSelected(), jcb[1].isSelected(), jcb[2].isSelected(), jcb2[0].isSelected(), jcb2[1].isSelected(), jcb3);
 					
 					model.setRowCount(0);
 					
